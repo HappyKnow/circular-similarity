@@ -34,4 +34,4 @@ theme: 内置主题
 ```
 
 ## 效果
-![image](https://raw.githubusercontent.com/kuangch/circular-similarity/master/screen.png)
+![image](https://raw.githubusercontent.com/HappyKnow/circular-similarity/master/screen.png)
