@@ -24,13 +24,14 @@ Vue.use(CircularSimilarity)
 
 组件属性
 ```
-value: 百分比
-diameter: 直径
-fontSize: 文字大小
-color: 字体颜色
-bgColor: 字体背景颜色
-shadowColorv: 圆环底色
-theme: 内置主题
+value: 百分比（必填 范围0-1）
+diameter: 直径（选填 需要加单位px、vw等,默认自适应父盒子，父盒子未设置宽高默认为70px）
+fontSize: 文字大小（选填 需要加单位px、vw等,默认为直径/3.5）
+size:圆环尺寸（选填 范围1-7,默认5）
+color: 字体颜色（选填）
+bgColor: 字体背景颜色（选填）
+shadowColor: 圆环底色（选填）
+theme: 内置主题（选填 white/blue 默认white）
 ```
 
 ## 效果

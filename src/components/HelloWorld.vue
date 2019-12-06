@@ -1,68 +1,68 @@
 <template>
 
     <div>
-        <p>默认</p>
+        <p>默认主题样式theme:white</p>
         <div class="item">
             <div class="container">
                 <circular-similarity :value="0"/>
             </div>
-            0%
+            <p>默认直径自适应父盒子</p>
         </div>
 
         <div class="item">
             <div class="container">
-                <circular-similarity :value="0.5"/>
+                <div style="display: inline-block"><circular-similarity :value="0.5"/></div>
             </div>
-            50%
+            <p>父盒子未设置宽高默认70px</p>
         </div>
 
         <div class="item">
             <div class="container">
-                <circular-similarity :value="1"/>
+                <circular-similarity :value="1" diameter="5vw"/>
             </div>
-            100%
+            <p>设置diameter大小</p>
         </div>
 
         <br>
-        <p>蓝色主题背景</p>
-        <div class="item">
-            <div class="container blue">
-                <circular-similarity :value="0" theme="blue"/>
-            </div>
-            0%
-        </div>
+        <p>蓝色主题背景theme:blue</p>
         <div class="item">
             <div class="container blue">
                 <circular-similarity :value="0.25" theme="blue"/>
             </div>
-            25%
+            默认size:5
         </div>
         <div class="item">
             <div class="container blue">
-                <circular-similarity :value="0.9" theme="blue"/>
+                <circular-similarity :value="0.72" theme="blue" :size="2"/>
             </div>
-            90%
+            size:2
+        </div>
+        <div class="item">
+            <div class="container blue">
+                <circular-similarity :value="0.95" theme="blue" :size="7"/>
+            </div>
+            size:7
         </div>
 
         <br>
-        <p>自定义-圆环大小、颜色、字体大小</p>
+        <p>自定义-圆环大小、字体大小、字体颜色</p>
         <div class="item">
             <div class="container gray">
-                <circular-similarity :value="0" diameter="5vw" fontSize="1vw" bgColor="#ddd" color="red"/>
+                <circular-similarity :value="0.8" bgColor="#ddd" shadowColor="purple"/>
             </div>
-            0
+            <p>shadowColor:purple</p>
         </div>
         <div class="item">
             <div class="container gray">
-                <circular-similarity :value="0.5" diameter="5vw" fontSize="1vw" bgColor="#ddd" color="red"/>
+                <circular-similarity :value="0.8" diameter="6vw" bgColor="#ddd" color="red"/>
             </div>
-            50%
+            <p>diameter:6vw,color:red</p>
         </div>
         <div class="item">
             <div class="container gray">
-                <circular-similarity :value="1" diameter="5vw" fontSize="1vw" bgColor="#ddd" color="red"/>
+                <circular-similarity :value="0.8" bgColor="#ddd" diameter="100px" fontSize="16px"/>
             </div>
-           100%
+           <p>diameter:100px,fontSize:16px</p>
         </div>
     </div>
 
@@ -78,7 +78,9 @@
             return {
 
             }
-        }
+        },
+      methods:{
+      }
     }
 </script>
 
@@ -89,7 +91,7 @@
         padding-right: 10px;
         display: inline-block;
     }
-
+    .item p{font-size: 12px;}
     .container {
         width: 150px;
         height: 150px;

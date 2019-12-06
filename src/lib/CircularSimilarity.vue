@@ -1,16 +1,16 @@
 <template>
-  <div class="similarity">
-    <div class="circle" :style="$constants.circleStyle">
-      <div class="obtuse_left" :style="$constants.clipObtuseStyle+$constants.shadowColor" v-if="percent>50">
-        <div class="obtuse_right" :style="$constants.clipObtuseStyle+'background:linear-gradient(360deg,rgb(255,'+(180+rotateAngle)+',0),rgb(255,190,0) '+5*rotateAngle/9+'%, rgb(255,'+(rotateAngle)+',0));transform:rotate('+rotateAngle+'deg);'"></div>
+  <div class="similarity" ref="similarity">
+    <div class="circle" :style="circleData.circleStyle">
+      <div class="obtuse_left" :style="circleData.clipObtuseStyle+circleData.shadowColor" v-if="percent>50">
+        <div class="obtuse_right" :style="circleData.clipObtuseStyle+'background:linear-gradient(-'+rotateAngle+'deg,rgb(255,172,0) 20%, rgb(255,0,0));transform:rotate('+rotateAngle+'deg);'"></div>
       </div>
       <div v-else>
-        <div class="obtuse_left" :style="$constants.clipObtuseStyle+$constants.shadowColor"></div>
-        <div class="acute_left" :style="$constants.clipAcuteStyle+$constants.shadowColor">
-          <div class="acute_right" :style="$constants.clipAcuteStyle+'transform:rotate('+rotateAngle+'deg);'"></div>
+        <div class="obtuse_left" :style="circleData.clipObtuseStyle+circleData.shadowColor"></div>
+        <div class="acute_left" :style="circleData.clipAcuteStyle+circleData.shadowColor">
+          <div class="acute_right" :style="circleData.clipAcuteStyle+'transform:rotate('+rotateAngle+'deg);'"></div>
         </div>
       </div>
-      <div class="circle_text" :style="$constants.textStyle">{{percent}}%</div>
+      <div class="circle_text" :style="circleData.textStyle">{{percent}}%</div>
     </div>
   </div>
 </template>
@@ -28,8 +28,7 @@ export default {
       }
     },
     diameter:{
-      type:String,
-      default:'70px'
+      type:String
     },
     fontSize:{
       type:String
@@ -43,29 +42,26 @@ export default {
     color:{
       type:String,
     },
+    size:{
+      type:Number,
+      default:5,
+      validator: function (value) {
+        return value >= 1 && value <=7;
+      }
+    },
     theme:{
       type:String,
       default:'white'
     },
   },
   created:function(){
-    let theme={
-      white:{shadowColor:'#EEE',bgColor:'#FFF',color:'#333'},
-      blue:{shadowColor:'#33bbff',bgColor:'rgb(13, 49, 117)',color:'#FFF'}
-    };
-    let shadowColor=this.shadowColor?this.shadowColor:theme[this.theme]?theme[this.theme].shadowColor:theme.white.shadowColor;
-    let bgColor=this.bgColor?this.bgColor:theme[this.theme]?theme[this.theme].bgColor:theme.white.bgColor;
-    let color=this.color?this.color:theme[this.theme]?theme[this.theme].color:theme.white.color;
-    this.$constants={
-      clipObtuseStyle:'clip: rect(0,auto,auto,calc('+this.diameter+' / 2));',
-      clipAcuteStyle:'clip: rect(0,calc('+this.diameter+' / 2),auto,0);',
-      textStyle:'width:calc(0.9 * '+this.diameter+');height:calc(0.9 * '+this.diameter+');line-height:calc(0.9 * '+this.diameter+');background-color:'+bgColor+';color:'+color+';font-size:'+(this.fontSize?this.fontSize:'calc('+this.diameter+' / 3.5)')+';',
-      circleStyle:'width:'+this.diameter+';height:'+this.diameter+';padding-top:calc('+this.diameter+'/ 20);',
-      shadowColor:'background-color:'+shadowColor+';',
-    }
+
   },
   data() {
     return{
+      width:'',
+      height:'',
+      circleSize:'70px'
     }
   },
   computed:{
@@ -75,13 +71,47 @@ export default {
     rotateAngle:function () {
       let auxiliaryAngle=(100-this.percent)*3.6;
       return auxiliaryAngle>=180?(auxiliaryAngle-180):auxiliaryAngle;
+    },
+    circleData:function () {
+      let theme={
+        white:{shadowColor:'#EEE',bgColor:'#FFF',color:'#333'},
+        blue:{shadowColor:'#33bbff',bgColor:'rgb(13, 49, 117)',color:'#FFF'}
+      };
+      let shadowColor=this.shadowColor?this.shadowColor:theme[this.theme]?theme[this.theme].shadowColor:theme.white.shadowColor;
+      let bgColor=this.bgColor?this.bgColor:theme[this.theme]?theme[this.theme].bgColor:theme.white.bgColor;
+      let color=this.color?this.color:theme[this.theme]?theme[this.theme].color:theme.white.color;
+
+      if(this.height&&this.width){
+        this.circleSize=parseFloat(this.height.substring(0,this.height.length-2))>parseFloat(this.height.substring(0,this.width.length-2))?this.width:this.height;
+      }
+      if(this.diameter){
+        this.circleSize=this.diameter;
+      }
+      let lineSize = this.size>7?7:this.size<1?1:this.size;
+      return{
+        clipObtuseStyle:'clip: rect(0,auto,auto,calc('+this.circleSize+' / 2));',
+        clipAcuteStyle:'clip: rect(0,calc('+this.circleSize+' / 2),auto,0);',
+        textStyle:'width:calc((1 - 0.02 * '+lineSize+') * '+this.circleSize+');height:calc((1 - 0.02 * '+lineSize+') * '+this.circleSize+');line-height:calc(( 1 - 0.02 * '+lineSize+') * '+this.circleSize+');background-color:'+bgColor+';color:'+color+';font-size:'+(this.fontSize?this.fontSize:'calc('+this.circleSize+' / 3.5)')+';',
+        circleStyle:'width:'+this.circleSize+';height:'+this.circleSize+';padding-top:calc('+this.circleSize+' * 0.02 * '+lineSize+'/2 );',
+        shadowColor:'background-color:'+shadowColor+';',
+      }
     }
   },
   methods: {
-
+    resize:function () {
+      this.width = window.getComputedStyle(this.$refs.similarity.parentElement).width;
+      this.height = window.getComputedStyle(this.$refs.similarity.parentElement).height;
+    }
   },
   mounted:function () {
-
+    let _this = this;
+    _this.width = window.getComputedStyle(_this.$refs.similarity.parentElement).width;
+    _this.height = window.getComputedStyle(_this.$refs.similarity.parentElement).height;
+    window.addEventListener('resize',_this.resize,false);
+  },
+  //注销window.onresize事件
+  destroyed(){
+    window.removeEventListener('resize',this.resize,false)
   }
 }
 </script>
@@ -98,7 +128,7 @@ export default {
     box-sizing: border-box;
     padding-top: .15vw;
     text-align: center;
-    background: linear-gradient(0deg,rgb(255,180,0), rgb(255,240,0));
+    background: linear-gradient(0deg,rgb(255,168,0), rgb(255,240,0));
     border-radius: 50%;
     position: relative;
     .obtuse_left , .acute_left , .obtuse_right , .acute_right{ width:100%; height:100%; border-radius:50%; position:absolute; left:0; top:0;}
