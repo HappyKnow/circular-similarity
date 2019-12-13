@@ -16,7 +16,7 @@
 </template>
 
 <script>
-
+const circleSize='70px';
 export default {
   name: 'circular-similarity',
   props:{
@@ -61,7 +61,7 @@ export default {
     return{
       width:'',
       height:'',
-      circleSize:'70px'
+      circleSize:''
     }
   },
   computed:{
@@ -81,9 +81,7 @@ export default {
       let bgColor=this.bgColor?this.bgColor:theme[this.theme]?theme[this.theme].bgColor:theme.white.bgColor;
       let color=this.color?this.color:theme[this.theme]?theme[this.theme].color:theme.white.color;
 
-      if(this.height&&this.width){
-        this.circleSize=parseFloat(this.height.substring(0,this.height.length-2))>parseFloat(this.height.substring(0,this.width.length-2))?this.width:this.height;
-      }
+
       if(this.diameter){
         this.circleSize=this.diameter;
       }
@@ -101,13 +99,21 @@ export default {
     resize:function () {
       this.width = window.getComputedStyle(this.$refs.similarity.parentElement).width;
       this.height = window.getComputedStyle(this.$refs.similarity.parentElement).height;
+      if(this.height&&this.width){
+        this.circleSize=parseFloat(this.height.substring(0,this.height.length-2))>parseFloat(this.width.substring(0,this.width.length-2))?this.width:this.height;
+      }
     }
   },
   mounted:function () {
-    let _this = this;
-    _this.width = window.getComputedStyle(_this.$refs.similarity.parentElement).width;
-    _this.height = window.getComputedStyle(_this.$refs.similarity.parentElement).height;
-    window.addEventListener('resize',_this.resize,false);
+    this.width = window.getComputedStyle(this.$refs.similarity.parentElement).width;
+    this.height = window.getComputedStyle(this.$refs.similarity.parentElement).height;
+    if(this.width&&this.height&&this.$refs.similarity.parentElement.children.length===1){
+      this.circleSize=parseFloat(this.height.substring(0,this.height.length-2))>parseFloat(this.width.substring(0,this.width.length-2))?this.width:this.height;
+      window.addEventListener('resize',this.resize,false);
+    }else {
+      this.circleSize=circleSize;
+    }
+
   },
   //注销window.onresize事件
   destroyed(){
